@@ -14,7 +14,7 @@ async function main(skill) {
     // await page.goto(`https://in.indeed.com/jobs?q=${skill}&l=Bengaluru%2C+Karnataka`,{ 
     await page.goto(`https://in.indeed.com/m/jobs?q=${skill}&l=`,{ 
     timeout: 0,
-    waitUntil: 'networkidele0'
+    waitUntil: 'networkidle0'
 });
     const jobData = await page.evaluate( async (data) =>{
         const items = document.querySelectorAll('td.resultsContent')
