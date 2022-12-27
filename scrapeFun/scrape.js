@@ -14,11 +14,15 @@ async function main(skill) {
     // await page.goto(`https://in.indeed.com/jobs?q=${skill}&l=Bengaluru%2C+Karnataka`,{ 
     await page.goto(`https://in.indeed.com/m/jobs?q=${skill}&l=`,{ 
     timeout: 0,
-    waitUntil: 'networkidele0'
+    waitUntil: 'networkidle0'
 });
+    console.log("page loaded successfully");
     const jobData = await page.evaluate( async (data) =>{
-        const items = document.querySelectorAll('td.resultsContent')
+        const items = document.querySelectorAll('td.resultContent')
+        console.log(items, "nodelist");
+
         items.forEach((item, index) =>{
+        
             const title = item.querySelector('h2.jobTitle>a')?.innerText;
             const link = item.querySelector('h2.jobTitle>a')?.href;
             let salary = item.querySelector('div.metadata.salary-snippet-container> div')?.innerText;
@@ -35,14 +39,25 @@ async function main(skill) {
                 link,
             })
         })
+        console.log(data, "data print")
         return data;
     }, data);
-
-    let response = await jobData;
+    
+    console.log(jobData, "jobdata print")
+    
+    let response = jobData;
     let json = JSON.stringify(jobData,null, 2)
-    fs.writefile('job.json', json, 'utf8', () =>{
-        console.log('writeten in job.json');
-    })
+
+    try{
+        fs.writeFileSync('job.json', json, 'utf8', (err) =>{
+             // Checking for errors
+        if (err) throw err; 
+            console.log('writeten in job.json');
+        })
+
+    }catch(e){
+        console.error(e);
+    }
     browser.close();
     return response;
 
